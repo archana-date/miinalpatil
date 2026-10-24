@@ -936,3 +936,49 @@ if (podcastSlider) {
     );
   }
 }
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const grid = document.getElementById("testimonialGrid");
+  const prev = document.querySelector(".testimonial-prev");
+  const next = document.querySelector(".testimonial-next");
+
+  if (!grid || !prev || !next) return;
+
+  function updateArrows() {
+    const maxScroll = grid.scrollWidth - grid.clientWidth;
+
+    prev.disabled = grid.scrollLeft <= 2;
+    next.disabled = grid.scrollLeft >= maxScroll - 2;
+  }
+
+  function scrollCards(direction) {
+    const card = grid.querySelector(".testimonial-card");
+
+    if (!card) return;
+
+    const gap = parseFloat(getComputedStyle(grid).gap) || 0;
+    const distance = card.getBoundingClientRect().width + gap;
+
+    grid.scrollBy({
+      left: direction * distance,
+      behavior: "smooth"
+    });
+  }
+
+  prev.addEventListener("click", function () {
+    scrollCards(-1);
+  });
+
+  next.addEventListener("click", function () {
+    scrollCards(1);
+  });
+
+  grid.addEventListener("scroll", updateArrows, {
+    passive: true
+  });
+
+  window.addEventListener("resize", updateArrows);
+
+  updateArrows();
+});
